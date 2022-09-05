@@ -54,7 +54,7 @@ class CSharpCompiler(typeProvider: ClassTypeProvider, config: RuntimeConfig)
 
   override def classHeader(name: String): Unit = {
 
-    out.puts(s"public partial class ${type2class(name)} : $kstructName")
+    out.puts(s"public sealed partial class ${type2class(name)} : $kstructName") // sealed so that call to "construct()" is robustly safe
     out.puts(s"{")
     out.inc
 
@@ -110,6 +110,9 @@ class CSharpCompiler(typeProvider: ClassTypeProvider, config: RuntimeConfig)
 
     // Store parameters passed to us
     params.foreach((p) => handleAssignmentSimple(p.id, paramName(p.id)))
+
+    // call user defined auxiliary ctor
+    out.puts("construct();")
   }
 
   override def classConstructorFooter: Unit = fileFooter(null)
@@ -135,7 +138,31 @@ class CSharpCompiler(typeProvider: ClassTypeProvider, config: RuntimeConfig)
     out.puts("}")
   }
 
+  var simpleAssignments: List[String] = List()
+  var assignmentsDuringRead: List[String] = List()
+
+  override def readAssignmentsHeader(endian: Option[FixedEndian], isEmpty: Boolean) = {
+      val readAccessAndType = "private"
+    val suffix = endian match {
+      case Some(e) => Utils.upperUnderscoreCase(e.toSuffix)
+      case None => ""
+    }
+    out.puts(s"$readAccessAndType void _readAssignments$suffix()")
+    out.puts("{")
+    out.inc
+  }
+
+  override def readAssignmentsBody(defEndian: Option[Endianness]): Unit = {
+    assignmentsDuringRead.foreach { line =>
+      out.puts(line)
+    }
+  }
+
+  override def readAssignmentsFooter(): Unit = fileFooter("")
+
   override def readHeader(endian: Option[FixedEndian], isEmpty: Boolean) = {
+    simpleAssignments = List()
+
     val readAccessAndType = if (!config.autoRead) {
       "public"
     } else {
@@ -145,12 +172,15 @@ class CSharpCompiler(typeProvider: ClassTypeProvider, config: RuntimeConfig)
       case Some(e) => Utils.upperUnderscoreCase(e.toSuffix)
       case None => ""
     }
-    out.puts(s"$readAccessAndType void _read$suffix()")
+    out.puts(s"$readAccessAndType override void __read$suffix()")
     out.puts("{")
     out.inc
   }
 
-  override def readFooter(): Unit = fileFooter("")
+  override def readFooter(): Unit = {
+    assignmentsDuringRead = simpleAssignments
+    fileFooter("")
+  }
 
   override def attributeDeclaration(attrName: Identifier, attrType: DataType, isNullable: Boolean): Unit = {
     out.puts(s"private ${kaitaiType2NativeTypeNullable(attrType, isNullable)} ${privateMemberName(attrName)};")
@@ -341,6 +371,11 @@ class CSharpCompiler(typeProvider: ClassTypeProvider, config: RuntimeConfig)
     out.puts(s"} while (!(${expression(untilExpr)}));")
     out.dec
     out.puts("}")
+  }
+
+  override def handleAssignmentSimpleSpecial(id: Identifier, expr: String): Unit = {
+    simpleAssignments = simpleAssignments ::: List(s"${privateMemberName(id)} = $expr;")
+    handleAssignmentSimple(id, expr)
   }
 
   override def handleAssignmentSimple(id: Identifier, expr: String): Unit =

@@ -81,6 +81,10 @@ abstract class LanguageCompiler(
   def classDestructorHeader(name: List[String], parentType: DataType, topClassName: List[String]): Unit = {}
   def classDestructorFooter: Unit = {}
 
+  def readAssignmentsHeader(endian: Option[FixedEndian], isEmpty: Boolean): Unit = {}
+  def readAssignmentsBody(defEndian: Option[Endianness]): Unit = {}
+  def readAssignmentsFooter(): Unit = {}
+
   def runRead(name: List[String]): Unit
   def runReadCalc(): Unit
   def readHeader(endian: Option[FixedEndian], isEmpty: Boolean): Unit

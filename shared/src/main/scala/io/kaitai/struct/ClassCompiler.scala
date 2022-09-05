@@ -280,6 +280,10 @@ class ClassCompiler(
     lang.readHeader(defEndian, seq.isEmpty)
     compileSeq(seq, defEndian)
     lang.readFooter()
+
+    lang.readAssignmentsHeader(defEndian, seq.isEmpty)
+    lang.readAssignmentsBody(defEndian)
+    lang.readAssignmentsFooter()
   }
 
   /**

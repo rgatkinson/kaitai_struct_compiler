@@ -8,7 +8,7 @@
   },
   "bundleDependencies": false,
   "deprecated": false,
-  "description": "Kaitai Struct Compiler",
+  "description": "Kaitai Struct Compiler (Anavasi)",
   "homepage": "https://github.com/kaitai-io/kaitai_struct_compiler#readme",
   "keywords": [
     "kaitai",
