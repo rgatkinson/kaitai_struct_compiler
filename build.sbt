@@ -138,7 +138,7 @@ lazy val compiler = crossProject.in(file(".")).
     debianPackageDependencies := Seq("java8-runtime-headless"),
 
     packageSummary in Linux := s"compiler to generate binary data parsers in $TARGET_LANGS",
-    packageSummary in Windows := "Kaitai Struct Compiler (rga)",
+    packageSummary in Windows := "Kaitai Struct Compiler (Anavasi)",
     packageDescription in Linux :=
       s"""This is the reference implementation of a compiler for Kaitai Struct (.ksy)
        | files. It allows to compile them into source code in:
