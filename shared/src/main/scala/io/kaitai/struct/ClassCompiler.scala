@@ -295,8 +295,15 @@ class ClassCompiler(
     var wasUnaligned = false
     seq.foreach { (attr) =>
       val nowUnaligned = isUnalignedBits(attr.dataType)
-      if (wasUnaligned && !nowUnaligned)
-        lang.alignToByte(lang.normalIO)
+      if (wasUnaligned && !nowUnaligned) {
+        // This is much better handled in the stream itself: simple: when
+        // reading data as whole bytes, implicitly call AlignToByte() before
+        // doing the read. This is is also more general, in that we don't have
+        // to correctly enumerate all possible aligned data types in isUnalignedBits().
+        // The downside is that the runtimes need to change to do the detection,
+        // which makes them different than the stock.
+        // lang.alignToByte(lang.normalIO)
+      }
       lang.attrParse(attr, attr.id, defEndian)
       wasUnaligned = nowUnaligned
     }
