@@ -187,7 +187,7 @@ class CSharpCompiler(typeProvider: ClassTypeProvider, config: RuntimeConfig)
   }
 
   override def attributeReader(attrName: Identifier, attrType: DataType, isNullable: Boolean): Unit = {
-    out.puts(s"public ${kaitaiType2NativeTypeNullable(attrType, isNullable)} ${publicMemberName(attrName)} { get { return ${privateMemberName(attrName)}; } }")
+    out.puts(s"public ${kaitaiType2NativeTypeNullable(attrType, isNullable)} ${publicMemberName(attrName)} { get { return ${privateMemberName(attrName)}; } set { ${privateMemberName(attrName)} = value;} }")
   }
 
   override def universalDoc(doc: DocSpec): Unit = {
