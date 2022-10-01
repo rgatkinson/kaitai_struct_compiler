@@ -54,7 +54,7 @@ class CSharpCompiler(typeProvider: ClassTypeProvider, config: RuntimeConfig)
 
   override def classHeader(name: String): Unit = {
 
-    out.puts(s"public sealed partial class ${type2class(name)} : $kstructName") // sealed so that call to "construct()" is robustly safe
+    out.puts(s"public sealed partial class ${type2class(name)} : $kstructName") // sealed so that call to "Construct()" is robustly safe
     out.puts(s"{")
     out.inc
 
@@ -112,13 +112,13 @@ class CSharpCompiler(typeProvider: ClassTypeProvider, config: RuntimeConfig)
     params.foreach((p) => handleAssignmentSimple(p.id, paramName(p.id)))
 
     // call user defined auxiliary ctor
-    out.puts("construct();")
+    out.puts("Construct();")
   }
 
   override def classConstructorFooter: Unit = fileFooter(null)
 
   override def runRead(name: List[String]): Unit =
-    out.puts("_read();")
+    out.puts("Read();")
 
   override def runReadCalc(): Unit = {
     out.puts
@@ -129,11 +129,11 @@ class CSharpCompiler(typeProvider: ClassTypeProvider, config: RuntimeConfig)
     out.dec
     out.puts(s"} else if (${privateMemberName(EndianIdentifier)} == true) {")
     out.inc
-    out.puts("_readLE();")
+    out.puts("ReadLE();")
     out.dec
     out.puts("} else {")
     out.inc
-    out.puts("_readBE();")
+    out.puts("ReadBE();")
     out.dec
     out.puts("}")
   }
@@ -147,7 +147,7 @@ class CSharpCompiler(typeProvider: ClassTypeProvider, config: RuntimeConfig)
       case Some(e) => Utils.upperUnderscoreCase(e.toSuffix)
       case None => ""
     }
-    out.puts(s"$readAccessAndType void _readAssignments$suffix()")
+    out.puts(s"$readAccessAndType void AssignInstanceVars$suffix()")
     out.puts("{")
     out.inc
   }
@@ -172,7 +172,7 @@ class CSharpCompiler(typeProvider: ClassTypeProvider, config: RuntimeConfig)
       case Some(e) => Utils.upperUnderscoreCase(e.toSuffix)
       case None => ""
     }
-    out.puts(s"$readAccessAndType override void __read$suffix()")
+    out.puts(s"$readAccessAndType override void ReadImpl$suffix()")
     out.puts("{")
     out.inc
   }
@@ -445,7 +445,7 @@ class CSharpCompiler(typeProvider: ClassTypeProvider, config: RuntimeConfig)
     } else {
       id
     }
-    out.puts(s"$expr._read();")
+    out.puts(s"$expr.Read();")
   }
 
   override def switchRequiresIfs(onType: DataType): Boolean = onType match {
