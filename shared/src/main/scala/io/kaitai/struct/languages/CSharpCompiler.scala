@@ -305,6 +305,7 @@ class CSharpCompiler(typeProvider: ClassTypeProvider, config: RuntimeConfig)
   override def condIfFooter(expr: expr): Unit = fileFooter(null)
 
   override def condRepeatCommonInit(id: Identifier, dataType: DataType, needRaw: NeedRaw): Unit = {
+    importList.add("System")
     importList.add("System.Collections.Generic")
 
     if (needRaw.level >= 1)
@@ -391,6 +392,15 @@ class CSharpCompiler(typeProvider: ClassTypeProvider, config: RuntimeConfig)
   override def blockScopeFooter: Unit = {
     out.dec
     out.puts("}")
+  }
+
+  override def parseEnumExpr(enumClass: String, dataType: DataType, assignType: DataType, io: String, defEndian: Option[FixedEndian]): String = {
+    dataType match {
+      case BitsType(width: Int, bitEndian) =>
+        s"$io.ReadBitsInt${Utils.upperCamelCase(bitEndian.toSuffix)}(Math.Max($width,${enumClass}_NumBits))"
+      case _ =>
+        parseExpr(dataType, assignType, io, defEndian)
+    }
   }
 
   override def parseExpr(dataType: DataType, assignType: DataType, io: String, defEndian: Option[FixedEndian]): String = {
@@ -582,6 +592,9 @@ class CSharpCompiler(typeProvider: ClassTypeProvider, config: RuntimeConfig)
 
     out.dec
     out.puts("}")
+
+    out.puts(s"public static readonly int ${enumClass}_NumBits = NumBits<$enumClass>();")
+    out.puts
   }
 
   def idToStr(id: Identifier): String =

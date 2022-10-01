@@ -13,6 +13,7 @@ class CSharpTranslator(provider: TypeProvider, importList: ImportList) extends B
     val nativeType = CSharpCompiler.kaitaiType2NativeType(t)
     val commaStr = value.map((v) => translate(v)).mkString(", ")
 
+    importList.add("System")
     importList.add("System.Collections.Generic")
     s"new List<$nativeType> { $commaStr }"
   }
@@ -66,6 +67,9 @@ class CSharpTranslator(provider: TypeProvider, importList: ImportList) extends B
   override def doEnumById(enumTypeAbs: List[String], id: String): String =
     s"((${enumClass(enumTypeAbs)}) $id)"
 
+  override def getEnumClass(enumTypeAbs: List[String]): String = {
+    enumClass(enumTypeAbs)
+  }
   def enumClass(enumTypeAbs: List[String]): String = {
     val enumTypeRel = Utils.relClass(enumTypeAbs, provider.nowClass.name)
     CSharpCompiler.types2class(enumTypeRel)

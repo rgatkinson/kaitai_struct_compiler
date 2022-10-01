@@ -185,6 +185,7 @@ abstract class BaseTranslator(val provider: TypeProvider)
 
   def doEnumByLabel(enumTypeAbs: List[String], label: String): String
   def doEnumById(enumTypeAbs: List[String], id: String): String
+  def getEnumClass(enumTypeAbs: List[String]): String = ""
 
   // Predefined methods of various types
   def strConcat(left: Ast.expr, right: Ast.expr): String = s"${translate(left)} + ${translate(right)}"

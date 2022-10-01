@@ -54,7 +54,7 @@ trait EveryReadIsExpression
         val expr = translator.bytesToStr(parseExprBytes(t.bytes, io), Ast.expr.Str(t.encoding))
         handleAssignment(id, expr, rep, isRaw)
       case t: EnumType =>
-        val expr = translator.doEnumById(t.enumSpec.get.name, parseExpr(t.basedOn, t.basedOn, io, defEndian))
+        val expr = translator.doEnumById(t.enumSpec.get.name, parseEnumExpr(translator.getEnumClass(t.enumSpec.get.name), t.basedOn, t.basedOn, io, defEndian))
         handleAssignment(id, expr, rep, isRaw)
       case _ =>
         val expr = parseExpr(dataType, assignType, io, defEndian)
@@ -194,6 +194,9 @@ trait EveryReadIsExpression
   }
   def handleAssignmentTempVar(dataType: DataType, id: String, expr: String): Unit = ???
 
+  def parseEnumExpr(enumClass: String, dataType: DataType, assignType: DataType, io: String, defEndian: Option[FixedEndian]): String = {
+    parseExpr(dataType, assignType, io, defEndian)
+  }
   def parseExpr(dataType: DataType, assignType: DataType, io: String, defEndian: Option[FixedEndian]): String
   def bytesPadTermExpr(expr0: String, padRight: Option[Int], terminator: Option[Int], include: Boolean): String
   def userTypeDebugRead(id: String, dataType: DataType, assignType: DataType): Unit = ???
