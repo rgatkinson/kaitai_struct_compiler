@@ -96,7 +96,7 @@ class ClassCompiler(
       curClass.params ++
       List(
         AttrSpec(List(), RootIdentifier, CalcUserType(topClassName, None)),
-        AttrSpec(List(), ParentIdentifier, curClass.parentType)
+        AttrSpec(List(), ParentIdentifier, UnknownClassSpec.toDataType) // was: curClass.parentType
       ) ++
       ExtraAttrs.forClassSpec(curClass, lang)
     compileAttrDeclarations(allAttrs)
@@ -125,7 +125,7 @@ class ClassCompiler(
   def compileConstructor(curClass: ClassSpec) = {
     lang.classConstructorHeader(
       curClass.name,
-      curClass.parentType,
+      UnknownClassSpec.toDataType, // // was: curClass.parentType
       topClassName,
       curClass.meta.endian.contains(InheritedEndian),
       curClass.params
