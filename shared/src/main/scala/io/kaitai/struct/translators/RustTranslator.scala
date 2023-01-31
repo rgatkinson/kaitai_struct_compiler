@@ -93,7 +93,7 @@ class RustTranslator(provider: TypeProvider, config: RuntimeConfig) extends Base
         s"base_convert(strval(${translate(i)}), 10, $baseStr)"
     }
   }
-  override def bytesToStr(bytesExpr: String, encoding: Ast.expr): String =
+  override def bytesToStr(io: String, bytesExpr: String, encoding: Ast.expr): String =
     translate(encoding) match {
       case "\"ASCII\"" =>
         s"String::from_utf8_lossy($bytesExpr)"

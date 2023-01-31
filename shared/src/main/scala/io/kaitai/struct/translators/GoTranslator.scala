@@ -299,10 +299,10 @@ class GoTranslator(out: StringLanguageOutputWriter, provider: TypeProvider, impo
     "utf-16be" -> ("unicode.UTF16(unicode.BigEndian, unicode.IgnoreBOM)", "golang.org/x/text/encoding/unicode")
   )
 
-  override def bytesToStr(value: Ast.expr, expr: Ast.expr): TranslatorResult =
-    bytesToStr(translate(value), expr)
+  override def bytesToStr(io: String, value: Ast.expr, expr: Ast.expr): TranslatorResult =
+    bytesToStr(io, translate(value), expr)
 
-  def bytesToStr(bytesExpr: String, encoding: Ast.expr): TranslatorResult = {
+  def bytesToStr(io: String, bytesExpr: String, encoding: Ast.expr): TranslatorResult = {
     val enc = encoding match {
       case Ast.expr.Str(s) => s
       case _ => throw new RuntimeException("Variable encodings are not supported in Go yet")

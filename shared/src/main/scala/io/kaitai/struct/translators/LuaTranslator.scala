@@ -110,7 +110,7 @@ class LuaTranslator(provider: TypeProvider, importList: ImportList) extends Base
       case _ => throw new UnsupportedOperationException(baseStr)
     }
   }
-  override def bytesToStr(bytesExpr: String, encoding: Ast.expr): String = {
+  override def bytesToStr(io: String, bytesExpr: String, encoding: Ast.expr): String = {
     importList.add("local str_decode = require(\"string_decode\")")
 
     s"str_decode.decode($bytesExpr, ${translate(encoding)})"

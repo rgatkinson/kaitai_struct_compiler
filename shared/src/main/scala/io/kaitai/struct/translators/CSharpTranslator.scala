@@ -108,8 +108,11 @@ class CSharpTranslator(provider: TypeProvider, importList: ImportList) extends B
     importList.add("System")
     s"Convert.ToString((long) (${translate(i)}), ${translate(base)})"
   }
-  override def bytesToStr(bytesExpr: String, encoding: Ast.expr): String =
-    s"System.Text.Encoding.GetEncoding(${translate(encoding)}).GetString($bytesExpr)"
+
+  override def bytesToStr(io: String, bytesExpr: String, encoding: Ast.expr): String =
+    s"$io.ReadString(${translate(encoding)}, () => $bytesExpr)"
+    // s"System.Text.Encoding.GetEncoding(${translate(encoding)}).GetString($bytesExpr)"
+
   override def strLength(s: expr): String =
     s"${translate(s)}.Length"
 

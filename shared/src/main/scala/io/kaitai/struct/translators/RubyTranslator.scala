@@ -87,7 +87,7 @@ class RubyTranslator(provider: TypeProvider) extends BaseTranslator(provider)
   override def intToStr(i: Ast.expr, base: Ast.expr): String =
     translate(i) + s".to_s(${translate(base)})"
 
-  override def bytesToStr(bytesExpr: String, encoding: Ast.expr): String =
+  override def bytesToStr(io: String, bytesExpr: String, encoding: Ast.expr): String =
     s"($bytesExpr).force_encoding(${translate(encoding)})"
   override def bytesLength(b: Ast.expr): String =
     s"${translate(b)}.size"

@@ -150,7 +150,7 @@ class PerlTranslator(provider: TypeProvider, importList: ImportList) extends Bas
 
     s"sprintf('$format', ${translate(i)})"
   }
-  override def bytesToStr(bytesExpr: String, encoding: Ast.expr): String = {
+  override def bytesToStr(io: String, bytesExpr: String, encoding: Ast.expr): String = {
     importList.add("Encode")
     s"Encode::decode(${translate(encoding)}, $bytesExpr)"
   }

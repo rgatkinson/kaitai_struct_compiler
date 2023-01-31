@@ -115,7 +115,7 @@ class JavaTranslator(provider: TypeProvider, importList: ImportList) extends Bas
     s"(int) (${translate(v)} + 0)"
   override def intToStr(i: expr, base: expr): String =
     s"Long.toString(${translate(i)}, ${translate(base)})"
-  override def bytesToStr(bytesExpr: String, encoding: Ast.expr): String = {
+  override def bytesToStr(io: String, bytesExpr: String, encoding: Ast.expr): String = {
     importList.add("java.nio.charset.Charset")
     s"new String($bytesExpr, Charset.forName(${translate(encoding)}))"
   }

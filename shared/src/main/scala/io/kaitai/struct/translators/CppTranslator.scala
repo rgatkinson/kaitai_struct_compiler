@@ -199,7 +199,7 @@ class CppTranslator(provider: TypeProvider, importListSrc: CppImportList, import
       case _ => throw new UnsupportedOperationException(baseStr)
     }
   }
-  override def bytesToStr(bytesExpr: String, encoding: Ast.expr): String =
+  override def bytesToStr(io: String, bytesExpr: String, encoding: Ast.expr): String =
     s"${CppCompiler.kstreamName}::bytes_to_str($bytesExpr, ${translate(encoding)})"
   override def bytesLength(b: Ast.expr): String =
     s"${translate(b)}.length()"
