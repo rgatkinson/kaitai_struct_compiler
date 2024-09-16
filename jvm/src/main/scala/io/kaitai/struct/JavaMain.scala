@@ -33,7 +33,7 @@ object JavaMain {
     val parser = new scopt.OptionParser[CLIConfig](Version.name) {
       override def showUsageOnError = true
 
-      head(Version.name, Version.version)
+      head(Version.name + " (Anavasi)", Version.version)
 
       arg[File]("<file>...") unbounded() action { (x, c) =>
         c.copy(srcFiles = c.srcFiles :+ x) } text("source files (.ksy)")
